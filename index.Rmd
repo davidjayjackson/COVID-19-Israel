@@ -1,7 +1,7 @@
 ---
 title: "Israel: COVID-19 In the Promised Land: "
 author: "David J Jackson"
-date: "Apr. 11, 2020 03:40PM EDT"
+date: "Apr. 11, 2020 06:10PM EDT"
 output: html_document
 ---
 
@@ -51,7 +51,7 @@ JHUDATA %>% ggplot() + geom_col(aes(x=date,y=deaths)) +
 JHUDATA %>% ggplot() + geom_col(aes(x=date,y=DeathRate)) +
   labs(title="Rate of Deaths: Israel's fight with COVID-19",x="Date Reported",y="Death RAte (%)")
 ```
-
+```{r}
 dbDisconnect(db)
 ```
 
