@@ -1,7 +1,7 @@
 ---
 title: "Israel: COVID-19 In the Promised Land: "
 author: "David J Jackson"
-date: :June 2, 2020 17:25 UT/UD"
+date: :June 3, 2020 21:00 UT/UD"
 output: html_document
 ---
 
