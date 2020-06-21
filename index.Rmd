@@ -1,22 +1,25 @@
 ---
 title: "Israel: COVID-19 In the Promised Land: "
 author: "David J Jackson"
-date:  "June 20,2020"
+date:  "June 21,2020"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(RSQLite)
 library(forecast)
+library(lubridate)
+library(ggeasy)
+knitr::opts_chunk$set(echo = TRUE)
 ```
 ```{r,echo=FALSE}
 rm(list=ls())
 db <- dbConnect(SQLite(), dbname="../COVIDDB//CORVID.sqlite3")
 ECDC <- dbGetQuery(db,"select Reported,Countries,Cases,Deaths from ECDC")
-ECDC$Reported <- as.Date(ECDC$Reported)
-ECDC$DeathRate <- ECDC$Deaths/ECDC$Cases
+ISRAEL <- ECDC %>% filter(Countries =="Israel" | Cases >0)
+ISRAEL$Reported <- as.Date(ISRAEL$Reported)
+ISRAEL$DeathRate <- ISRAEL$Deaths/ISRAEL$Cases
 
 ## JHU Data
 JHUDATA <- dbGetQuery(db,"select date,country,confirmed,deaths,recovered from JHUDATA
@@ -30,11 +33,17 @@ JHUDATA$DeathRate <- JHUDATA$deaths/JHUDATA$confirmed
 ### Israel's Fight with COVID-19 (Daily Totals)
 
 ```{r,echo=FALSE}
-ECDC %>% ggplot() + geom_col(aes(x=Reported,y=Cases)) +
-  labs(title="Total Cases: Israel's fight with COVID-19",x="Date Reported",y="Total Cases Reported")
+ISRAEL <- ISRAEL %>% group_by(Weekly = floor_date(Reported,"week")) %>%
+  summarize(total_cases = sum(Cases),
+ total_deaths = sum(Deaths))
+  
+  
 
-ECDC %>% ggplot() + geom_col(aes(x=Reported,y=Deaths)) +
-  labs(title="Total Deaths: Israel's fight with COVID-19",x="Date Reported",y="Total Deaths Reported")
+ISRAEL %>% ggplot() + geom_col(aes(x=Weekly,y=total_cases)) +
+  labs(title="Total Weekly Cases: Israel's fight with COVID-19",x="Date Reported",y="Total Cases Reported") 
+
+ISRAEL %>% ggplot() + geom_col(aes(x=Weekly,y=total_deaths)) +
+  labs(title="Total Weekly Deaths: Israel's fight with COVID-19",x="Date Reported",y="Total Deaths Reported")
 
 # ECDC %>% ggplot() + geom_col(aes(x=Reported,y=DeathRate)) +
 #   labs(title="Rate of Deaths: Israel's fight with COVID-19",x="Date Reported",y="Death RAte (%)")
