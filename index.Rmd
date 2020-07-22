@@ -1,7 +1,7 @@
 ---
 title: "Israel: COVID-19 In the Promised Land: "
 author: "David J Jackson"
-date:  "July 21, 2020"
+date:  "July 22, 2020"
 output: html_document
 ---
 
@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ```{r,echo=FALSE}
 rm(list=ls())
-db <- dbConnect(SQLite(), dbname="../COVIDDB//COVID.sqlite3")
+db <- dbConnect(SQLite(), dbname="../COVIDDB/COVID.sqlite3")
 ECDC <- dbGetQuery(db,"select Reported,Countries,Cases,Deaths from ECDC")
 ISRAEL <- ECDC %>% filter(Countries =="Israel")
 ISRAEL$Reported <- as.Date(ISRAEL$Reported)
