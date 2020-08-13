@@ -1,67 +1,95 @@
 ---
-title: "Israel: COVID-19 In the Promised Land: "
+title: 'Israel Battle with COVID'
 author: "David J Jackson"
-date:  "August 12, 2020"
+date: "8/12/2020"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-library(tidyverse)
-library(RSQLite)
-library(forecast)
-library(lubridate)
-library(ggeasy)
 knitr::opts_chunk$set(echo = TRUE)
-```
-```{r,echo=FALSE}
-rm(list=ls())
-db <- dbConnect(SQLite(), dbname="../COVIDDB/COVID.sqlite3")
-ECDC <- dbGetQuery(db,"select Reported,Countries,Cases,Deaths from ECDC")
-ISRAEL <- ECDC %>% filter(Countries =="Israel")
-ISRAEL$Reported <- as.Date(ISRAEL$Reported)
-ISRAEL$DeathRate <- ISRAEL$Deaths/ISRAEL$Cases
-
-## JHU Data
-JHUDATA <- dbGetQuery(db,"select date,country,confirmed,deaths,recovered from JHUDATA
-                      WHERE country='Israel'")
-JHUDATA$date <- as.Date(JHUDATA$date)
-JHUDATA$DeathRate <- JHUDATA$deaths/JHUDATA$confirmed
-
-
-```
-
-### Israel's Fight with COVID-19 (Daily Totals)
-
-```{r,echo=FALSE}
-ISRAEL <- ISRAEL %>% group_by(Weekly = floor_date(Reported,"week")) %>%
-  summarize(total_cases = sum(Cases),
- total_deaths = sum(Deaths))
-  
-  
-
-ISRAEL %>% ggplot() + geom_col(aes(x=Weekly,y=total_cases)) +
-  labs(title="Total Weekly Cases: Israel's fight with COVID-19",x="Date Reported",y="Total Cases Reported") 
-
-ISRAEL %>% ggplot() + geom_col(aes(x=Weekly,y=total_deaths)) +
-  labs(title="Total Weekly Deaths: Israel's fight with COVID-19",x="Date Reported",y="Total Deaths Reported")
-
-# ECDC %>% ggplot() + geom_col(aes(x=Reported,y=DeathRate)) +
-#   labs(title="Rate of Deaths: Israel's fight with COVID-19",x="Date Reported",y="Death RAte (%)")
-```
-
-### Israel's Fight with COVID-19 Accumulated Totals (From Jan. 1,2020)
-
-```{r,echo=FALSE}
-JHUDATA %>% ggplot() + geom_col(aes(x=date,y=confirmed)) +
-  labs(title="Total Cases: Israel's fight with COVID-19",x="Date Reported",y="Total Cases To Date")
-
-JHUDATA %>% ggplot() + geom_col(aes(x=date,y=deaths)) +
-  labs(title="Total Deaths: Israel's fight with COVID-19",x="Date Reported",y="Total  Deaths To Date")
-
-JHUDATA %>% ggplot() + geom_col(aes(x=date,y=DeathRate)) +
-  labs(title="Rate of Deaths: Israel's fight with COVID-19",x="Date Reported",y="Death RAte (%)")
+options(scipen=5)
+library(RSQLite)
 ```
 ```{r}
-dbDisconnect(db)
+rm(list=ls())
+source("../DATA/movavg.R")
+db <- db <- dbConnect(RSQLite::SQLite(),dbname= "../COVIDDB/COVID.sqlite3")
+df <- dbGetQuery(db,"select * from ECDC")
+df <- subset(df,Countries =="Israel" & Cases >0 )
+df$Reported <- as.Date(df$Reported)
+str(df)
+
+```
+```{r}
+US <- subset(df,Reported >="2020-04-01")
+US$MA14 <- movingAverage(US$Cases,14)
+plot(US$Reported,US$Cases,type="l",main="Isreal COVID-19 Cases Apr. 1,2020 - Aug. 12, 2020")
+lines(US$Reported,US$MA14,col="red")
+grid(col="black")
+```
+```{r}
+US <- subset(df,Reported >="2020-04-01" & Reported <="2020-08-08")
+US$Deaths14 <- movingAverage(US$Deaths,14)
+plot(US$Reported,US$Deaths,type="l",main="Israel COVID-19 Deaths Apr. 1,2020 - Aug. 12, 2020")
+lines(US$Reported,US$Deaths14,col="red")
+grid(col="black")
 ```
 
+#### Non-Moving Average By Week and By Month
+
+```{r}
+US$Monthly <- as.Date(cut(US$Reported,
+  breaks = "month"))
+US$Weekly <- as.Date(cut(US$Reported,
+  breaks = "week",
+  start.on.monday = FALSE))
+
+```
+```{r}
+Weekly_Cases <- aggregate(Cases~Weekly,US,FUN=sum)
+Weekly_Deaths <- aggregate(Deaths~Weekly,US,FUN=sum)
+
+```
+```{r}
+barplot(Cases ~Weekly,data=Weekly_Cases,main="Israel Weekly Barplot of Cases")
+grid(col="black")
+barplot(Deaths ~Weekly,data=Weekly_Deaths,main="Israel Weekly Barplot of Deaths")
+grid(col="black")
+```
+```{r}
+
+Monthly_Cases <- aggregate(Cases~Monthly,US,FUN=sum)
+Monthly_Deaths <- aggregate(Deaths~Monthly,US,FUN=sum)
+```
+```{r}
+barplot(Cases ~Monthly,data=Monthly_Cases,main="Israel Monthly Barplot of Total Cases")
+grid(col="black")
+barplot(Deaths ~Monthly,data=Monthly_Deaths,main="Israel Monthly Barplot of Total Deaths")
+grid(col="black")
+```
+
+### Weekly and Montly Mean COVID-19 Cases And Deaths
+
+```
+```{r}
+Weekly_Cases <- aggregate(Cases~Weekly,US,FUN=mean)
+Weekly_Deaths <- aggregate(Deaths~Weekly,US,FUN=mean)
+
+```
+```{r}
+barplot(Cases ~Weekly,data=Weekly_Cases,main="Israel Weekly Barplot of Mean Cases")
+grid(col="black")
+barplot(Deaths ~Weekly,data=Weekly_Deaths,main="Israel Weekly Barplot of Mean Deaths")
+grid(col="black")
+```
+```{r}
+
+Monthly_Cases <- aggregate(Cases~Monthly,US,FUN=mean)
+Monthly_Deaths <- aggregate(Deaths~Monthly,US,FUN=mean)
+```
+```{r}
+barplot(Cases ~Monthly,data=Monthly_Cases,main="Israel Monthly Mean Barplot of Cases")
+grid(col="black")
+barplot(Deaths ~Monthly,data=Monthly_Deaths,main="Israel Monthly Mean Barplot of Deaths")
+grid(col="black")
+```
