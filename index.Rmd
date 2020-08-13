@@ -1,7 +1,7 @@
 ---
 title: 'Israel Battle with COVID'
 author: "David J Jackson"
-date: "8/12/2020"
+date: "8/13/2020"
 output: html_document
 ---
 
