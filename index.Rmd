@@ -70,11 +70,9 @@ grid(col="black")
 
 ### Weekly and Montly Mean COVID-19 Cases And Deaths
 
-```
 ```{r}
 Weekly_Cases <- aggregate(Cases~Weekly,US,FUN=mean)
 Weekly_Deaths <- aggregate(Deaths~Weekly,US,FUN=mean)
-
 ```
 ```{r}
 barplot(Cases ~Weekly,data=Weekly_Cases,main="Israel Weekly Barplot of Mean Cases")
@@ -83,7 +81,6 @@ barplot(Deaths ~Weekly,data=Weekly_Deaths,main="Israel Weekly Barplot of Mean De
 grid(col="black")
 ```
 ```{r}
-
 Monthly_Cases <- aggregate(Cases~Monthly,US,FUN=mean)
 Monthly_Deaths <- aggregate(Deaths~Monthly,US,FUN=mean)
 ```
