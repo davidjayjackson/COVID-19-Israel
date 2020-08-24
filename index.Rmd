@@ -18,43 +18,42 @@ rm(list=ls())
 source("../DATA/movavg.R")
 db <- db <- dbConnect(RSQLite::SQLite(),dbname= "../COVIDDB/COVID.sqlite3")
 df <- dbGetQuery(db,"select * from ECDC")
-df <- subset(df,Countries =="Israel" & Cases >0 )
+df <- subset(df,Countries =="Israel" & Reported >="2020-04-01")
 df$Reported <- as.Date(df$Reported)
 str(df)
-
 ```
 ```{r}
-US <- subset(df,Reported >="2020-04-01")
-summary(US$Cases)
-summary(US$Deaths)
-US$MA14 <- movingAverage(US$Cases,14)
-plot(US$Reported,US$Cases,type="l",main=" COVID-19 Cases Apr. 1,2020 - Aug. 23, 2020",
+# US <- subset(df,Reported <="2020-04-24")
+summary(df$Cases)
+summary(df$Deaths)
+df$MA14 <- movingAverage(df$Cases,14)
+plot(df$Reported,df$Cases,type="l",main=" COVID-19 Cases Apr. 1,2020 - Aug. 23, 2020",
      xlab="Date Reported",ylab="Cases")
-lines(US$Reported,US$MA14,col="red")
+lines(df$Reported,df$MA14,col="red")
 grid(col="black")
 ```
 ```{r}
-US <- subset(df,Reported >="2020-04-01" & Reported <="2020-08-23")
-US$Deaths14 <- movingAverage(US$Deaths,14)
-plot(US$Reported,US$Deaths,type="l",main="COVID-19 Deaths Apr. 1,2020 - Aug. 23, 2020",
+# US <- subset(df,Reported >="2020-04-01" & Reported <="2020-08-24")
+df$Deaths14 <- movingAverage(df$Deaths,14)
+plot(df$Reported,df$Deaths,type="l",main="COVID-19 Deaths Apr. 1,2020 - Aug. 23, 2020",
      xlab="Date Reported",ylab="Deaths and 14 day Moving Averges(red)")
-lines(US$Reported,US$Deaths14,col="red")
+lines(df$Reported,df$Deaths14,col="red")
 grid(col="black")
 ```
 
 #### Non-Moving Average By Week and By Month
 
 ```{r}
-US$Monthly <- as.Date(cut(US$Reported,
+df$Monthly <- as.Date(cut(df$Reported,
   breaks = "month"))
-US$Weekly <- as.Date(cut(US$Reported,
+df$Weekly <- as.Date(cut(df$Reported,
   breaks = "week",
   start.on.monday = FALSE))
 
 ```
 ```{r}
-Weekly_Cases <- aggregate(Cases~Weekly,US,FUN=sum)
-Weekly_Deaths <- aggregate(Deaths~Weekly,US,FUN=sum)
+Weekly_Cases <- aggregate(Cases~Weekly,df,FUN=sum)
+Weekly_Deaths <- aggregate(Deaths~Weekly,df,FUN=sum)
 Weekly_Cases$DRate <- Weekly_Deaths$Deaths/Weekly_Cases$Cases *100
 # Weekly_Cases$LivedSaved <- Weekly_Cases$Cases * (max(Weekly_Cases$DRate) - Weekly_Cases$DRate) 
 
@@ -79,8 +78,8 @@ grid(col="black")
 
 ```{r}
 
-Monthly_Cases <- aggregate(Cases~Monthly,US,FUN=sum)
-Monthly_Deaths <- aggregate(Deaths~Monthly,US,FUN=sum)
+Monthly_Cases <- aggregate(Cases~Monthly,df,FUN=sum)
+Monthly_Deaths <- aggregate(Deaths~Monthly,df,FUN=sum)
 Monthly_Cases$DRate <- Monthly_Deaths$Deaths/Monthly_Cases$Cases *100
 # Monthly_Cases$LivedSaved <- Monthly_Cases$Cases * (max(Monthly_Cases$DRate) - Monthly_Cases$DRate) 
 
@@ -105,8 +104,8 @@ grid(col="black")
 ### Weekly and Monthly Mean COVID-19 Cases And Deaths
 
 ```{r}
-Weekly_Cases <- aggregate(Cases~Weekly,US,FUN=mean)
-Weekly_Deaths <- aggregate(Deaths~Weekly,US,FUN=mean)
+Weekly_Cases <- aggregate(Cases~Weekly,df,FUN=mean)
+Weekly_Deaths <- aggregate(Deaths~Weekly,df,FUN=mean)
 ```
 ```{r}
 barplot(Cases ~Weekly,data=Weekly_Cases,main="Weekly Mean Cases",
@@ -117,8 +116,8 @@ barplot(Deaths ~Weekly,data=Weekly_Deaths,main="Weekly Mean Deaths",
 grid(col="black")
 ```
 ```{r}
-Monthly_Cases <- aggregate(Cases~Monthly,US,FUN=mean)
-Monthly_Deaths <- aggregate(Deaths~Monthly,US,FUN=mean)
+Monthly_Cases <- aggregate(Cases~Monthly,df,FUN=mean)
+Monthly_Deaths <- aggregate(Deaths~Monthly,df,FUN=mean)
 ```
 ```{r}
 barplot(Cases ~Monthly,data=Monthly_Cases,main="Monthly Mean Cases",
