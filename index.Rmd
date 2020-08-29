@@ -1,7 +1,7 @@
 ---
 title: "Isreal's COVID-19 in a Nutshell"
 author: "David J Jackson"
-date: "8/28/2020"
+date: "8/29/2020"
 output: 
   html_document: 
     fig_width: 9
@@ -23,7 +23,7 @@ df$Reported <- as.Date(df$Reported)
 str(df)
 ```
 ```{r}
-# US <- subset(df,Reported <="2020-04-31")
+# US <- subset(df,Reported <="2020-08-31")
 summary(df$Cases)
 summary(df$Deaths)
 df$MA14 <- movingAverage(df$Cases,14)
