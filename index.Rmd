@@ -1,7 +1,7 @@
 ---
 title: 'Israel Battle With COVID-19'
 author: "David Jackson"
-date: "9/18/2020"
+date: "9/19/2020"
 output: 
   html_document: 
     fig_width: 9
@@ -83,6 +83,7 @@ ggplot(Weekly_Deaths) + geom_col(aes(x=Weekly,y=Deaths)) +
   labs(title="Weekly Deaths",x="Date Reported", y="Weekly Deaths") +
    ylim(0,200)
 ``` 
+
 #### Monthly Cases and Deaths
 
 ```{r}
