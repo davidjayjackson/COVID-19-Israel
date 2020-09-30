@@ -1,7 +1,7 @@
 ---
 title: 'Israel Battle With COVID-19'
 author: "David Jackson"
-date: "Sept. 29, 2020"
+date: "Sept. 30, 2020"
 output: 
   html_document: 
     fig_width: 9
@@ -40,12 +40,14 @@ US$MAD <- movingAverage(US$Deaths,14)
 ```{r}
 ggplot(US) + geom_line(aes(x=Reported,y=Cases,col="Daily Cases")) +
   labs(title="COVID-19 Cases by Date") +
-  geom_line(aes(x=Reported,y=MA14,col="Mov AVg"))
+  geom_line(aes(x=Reported,y=MA14,col="Mov AVg")) +
+  geom_smooth(aes(x=Reported,y=Cases,col="Loess"),span=0.25)
 ```
 ```{r}
 ggplot(US) + geom_line(aes(x=Reported,y=Deaths,col="Daily Deaths")) +
   labs(title="COVID-19 Deaths by Date") + ylim(0,75) +
-  geom_line(aes(x=Reported,y=MAD,col="Mov AVg"))
+  geom_line(aes(x=Reported,y=MAD,col="Mov AVg")) +
+  geom_smooth(aes(x=Reported,y=Deaths,col="Loess"),span=0.25)
 ```
 ```{r}
 USA <- subset(US,Reported >="2020-06-01")
