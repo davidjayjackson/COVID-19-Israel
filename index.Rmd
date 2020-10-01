@@ -1,7 +1,7 @@
 ---
 title: 'Israel Battle With COVID-19'
 author: "David Jackson"
-date: "Sept. 30, 2020"
+date: "Oct. 1, 2020"
 output: 
   html_document: 
     fig_width: 9
@@ -28,11 +28,25 @@ df$Reported <- as.Date(df$Reported)
 mean(df$Cases)
 mean(df$Deaths)
 ```
+
 ```{r}
-US <- subset(df,Reported >="2020-04-01")
+US <- subset(df,Reported >="2020-07-01")
 US <- US[order(US$Reported,decreasing = TRUE),]
 US$MA14 <- movingAverage(US$Cases,14)
 US$MAD <- movingAverage(US$Deaths,14)
+US$Rate <- US$Deaths/US$Cases
+```
+
+
+### Israel COVID19 Mortality Rate
+
+```{r}
+A <- subset(US,Reported >="2020-04-01")
+ggplot(A) + geom_line(aes(x=Reported,y=Rate)) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(title="Spain COVID19 Mortality Rate ",x="Date Reported",y="Mortality Rate") +
+  geom_hline(yintercept = mean(A$Rate),col="red")
+
 ```
 
 ### Plot of Daily Cases and Deaths
