@@ -1,7 +1,7 @@
 ---
 title: 'Israel Battle With COVID-19'
 author: "David Jackson"
-date: "Oct.8, 2020"
+date: "Oct.11, 2020"
 output: 
   html_document: 
     fig_width: 9
@@ -44,8 +44,9 @@ US$Rate <- US$Deaths/US$Cases
 A <- subset(US,Reported >="2020-04-01")
 ggplot(A) + geom_line(aes(x=Reported,y=Rate)) +
   scale_y_continuous(labels = scales::percent) +
-  labs(title="Spain COVID19 Mortality Rate ",x="Date Reported",y="Mortality Rate") +
-  geom_hline(yintercept = mean(A$Rate),col="red")
+  labs(title="Israel COVID19 Mortality Rate ",x="Date Reported",y="Mortality Rate") +
+  geom_hline(yintercept = mean(A$Rate),col="red") +
+  geom_smooth(aes(x=Reported,y=Rate,col="Rate"),span=0.25)
 
 ```
 
@@ -54,24 +55,22 @@ ggplot(A) + geom_line(aes(x=Reported,y=Rate)) +
 ```{r}
 ggplot(US) + geom_line(aes(x=Reported,y=Cases,col="Daily Cases")) +
   labs(title="COVID-19 Cases by Date") +
-  geom_line(aes(x=Reported,y=MA14,col="Mov AVg")) +
   geom_smooth(aes(x=Reported,y=Cases,col="Loess"),span=0.25)
 ```
 ```{r}
 ggplot(US) + geom_line(aes(x=Reported,y=Deaths,col="Daily Deaths")) +
   labs(title="COVID-19 Deaths by Date") + ylim(0,75) +
-  geom_line(aes(x=Reported,y=MAD,col="Mov AVg")) +
   geom_smooth(aes(x=Reported,y=Deaths,col="Loess"),span=0.25)
 ```
 ```{r}
 USA <- subset(US,Reported >="2020-06-01")
 ggplot(USA) + geom_line(aes(x=Reported,y=Cases,col="Daily Cases")) +
   labs(title="COVID-19 Cases by Date since Jun. 1, 2020)") +
-  geom_line(aes(x=Reported,y=MA14,col="Mov AVg"))
+  geom_smooth(aes(x=Reported,y=Cases,col="Loess"),span=0.25)
 
 ggplot(USA) + geom_line(aes(x=Reported,y=Deaths,col="Daily Deaths")) +
   labs(title="COVID-19 Deaths by Date (since Jun. 1, 2020)") + ylim(0,75) +
-  geom_line(aes(x=Reported,y=MAD,col="Mov AVg"))
+  geom_smooth(aes(x=Reported,y=Deaths,col="Loess"),span=0.25)
 ```
 
 #### Non-Moving Average By Week and By Month
