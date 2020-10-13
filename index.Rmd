@@ -1,7 +1,7 @@
 ---
 title: 'Israel Battle With COVID-19'
 author: "David Jackson"
-date: "Oct.12, 2020"
+date: "Oct.13, 2020"
 output: 
   html_document: 
     fig_width: 9
@@ -46,7 +46,7 @@ ggplot(A) + geom_line(aes(x=Reported,y=Rate)) +
   scale_y_continuous(labels = scales::percent) +
   labs(title="Israel COVID19 Mortality Rate ",x="Date Reported",y="Mortality Rate") +
   geom_hline(yintercept = mean(A$Rate),col="red") +
-  geom_smooth(aes(x=Reported,y=Rate,col="Rate"),span=0.25)
+  geom_smooth(aes(x=Reported,y=Rate,col="Rate"),span=0.5)
 
 ```
 
