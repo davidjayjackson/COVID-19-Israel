@@ -16,7 +16,7 @@ library(RSQLite)
 theme_set(theme_linedraw())
 ```
 
-## Israel's Battle with COVID-19
+### Israel's Battle with COVID-19
 
 ```{r}
 rm(list=ls())
