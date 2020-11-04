@@ -1,7 +1,7 @@
 ---
 title: 'Israel Battle With COVID-19'
 author: "David Jackson"
-date: "Nov.03, 2020"
+date: "Nov.04, 2020"
 output: 
   html_document: 
     fig_width: 9
@@ -35,6 +35,7 @@ US <- US[order(US$Reported,decreasing = TRUE),]
 US$MA14 <- movingAverage(US$Cases,14)
 US$MAD <- movingAverage(US$Deaths,14)
 US$Rate <- US$Deaths/US$Cases
+mean(US$Rate)
 ```
 
 
