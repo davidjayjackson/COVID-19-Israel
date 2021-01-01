@@ -1,7 +1,7 @@
 ---
 title: 'Israel: Battle With COVID-19'
 author: "David Jackson"
-date: "12/31/2020 11:30 AM/EST"
+date: "01/01/2021 01:50 PM/EST"
 output: 
   html_document: 
     fig_width: 9
@@ -26,6 +26,8 @@ db <- dbConnect(SQLite(), dbname="../COVID-19-DB/OURWORLD.sqlite3")
 df <- dbGetQuery(db,"select * from JHU")
 df <- subset(df,location =="Israel")
 df$date <- as.Date(df$date)
+sum(df$new_cases,na.rm=TRUE)
+sum(df$new_deaths,na.rm=TRUE)
 
 ```
 ```{r}
