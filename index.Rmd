@@ -14,6 +14,7 @@ library(ggplot2)
 library(scales)
 library(RSQLite)
 library(plotly)
+library(forecast)
 theme_set(theme_linedraw())
 ```
 
@@ -33,8 +34,8 @@ sum(df$new_deaths,na.rm=TRUE)
 ```{r}
 US <- subset(df,date >="2020-02-21" & new_cases >=1)
 US <- US[order(US$date,decreasing = TRUE),]
-US$MAC <- movingAverage(US$new_cases,7)
-US$MAD <- movingAverage(US$new_deaths,7)
+US$MAC <- ma(US$new_cases,7)
+US$MAD <- ma(US$new_deaths,7)
 US$Rate <- US$new_deaths/US$new_cases
 ```
 
