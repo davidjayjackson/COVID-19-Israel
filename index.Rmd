@@ -16,14 +16,52 @@ library(RSQLite)
 library(plotly)
 library(forecast)
 theme_set(theme_linedraw())
+
+```
+
+## COVID-19 Vaccine Rollout
+
+```{r}
+rm(list=ls())
+db <- dbConnect(SQLite(), dbname="../COVID-19-DB/OURWORLD.sqlite3")
+vac <- dbGetQuery(db,"select * from OWID where location = 'Israel'")
+vac$date <- as.Date(vac$date)
+vac <- vac[order(vac$date),]
+vac <- vac %>%select(date,location,iso_code,new_vaccinations,
+                    new_vaccinations_smoothed,total_vaccinations,population) %>%
+                    na.omit()
+summary(vac$new_vaccinations)
+```
+
+```{r}
+p5 <- ggplot(vac) + geom_line(aes(x=date,y=new_vaccinations)) +
+  scale_y_continuous(labels=comma) +
+  labs(title="Israel s New Vaccinations By Date") +
+  geom_smooth(aes(x=date,y=new_vaccinations))
+ggplotly(p5)
+```
+```{r}
+p6 <- ggplot(vac) + geom_line(aes(x=date,y=total_vaccinations)) +
+  scale_y_continuous(labels=comma) +
+  labs(title="Irael's Total Vaccinations By Date") 
+ggplotly(p6)
+```
+
+```{r}
+vac$Rate <- vac$total_vaccinations/vac$population
+p7 <- ggplot(vac) + geom_line(aes(x=date,y=Rate)) + 
+    scale_y_continuous(labels=percent)  +
+  labs(title="Israel's vaccination Rate By Day") 
+ggplotly(p7)
+
+
+
 ```
 
 ## Israel's Battle with COVID-19
 
 ```{r}
-rm(list=ls())
-source("../DATA/movavg.R")
-db <- dbConnect(SQLite(), dbname="../COVID-19-DB/OURWORLD.sqlite3")
+
 df <- dbGetQuery(db,"select * from JHU")
 df <- subset(df,location =="Israel")
 df$date <- as.Date(df$date)
