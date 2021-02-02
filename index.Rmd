@@ -1,7 +1,7 @@
 ---
 title: 'Israel: Battle With COVID-19'
 author: "David Jackson"
-date: "02/01/2021 02:15 PM/EST"
+date: "02/02/2021 10:55 AM/EST"
 output: 
   html_document: 
     fig_width: 9
@@ -18,43 +18,72 @@ library(forecast)
 theme_set(theme_linedraw())
 
 ```
-
-## COVID-19 Vaccine Rollout
-
 ```{r}
 rm(list=ls())
+source("../DATA/movavg.R")
+
 db <- dbConnect(SQLite(), dbname="../COVID-19-DB/OURWORLD.sqlite3")
+df <- dbGetQuery(db,"select * from JHU")
+df <- subset(df,location =="Israel"  )
+df$date <- as.Date(df$date)
+sum(df$new_cases,na.rm = TRUE)
+sum(df$new_deaths,na.rm=TRUE)
+
+```
+```{r}
+US <- subset(df,date >="2020-04-01" & new_cases >=1)
+US <- US[order(US$date,decreasing = TRUE),]
+US$MAC <- ma(US$new_cases,7,centre=TRUE)
+US$MAD <- ma(US$new_deaths,7,centre=TRUE)
+US$Rate <- US$new_deaths/US$new_cases
+```
+
+## Israel's Vaccine Rollout
+
+```{r}
 vac <- dbGetQuery(db,"select * from OWID where location = 'Israel'")
 vac$date <- as.Date(vac$date)
 vac <- vac[order(vac$date),]
 vac <- vac %>%select(date,location,iso_code,new_vaccinations,
-                    new_vaccinations_smoothed,total_vaccinations,population) %>%
+                    total_vaccinations,population,
+                    people_vaccinated,people_fully_vaccinated
+
+) %>%
                     na.omit()
-summary(vac$new_vaccinations)
+summary(vac$speople_vaccinated,na.rm=TRUE)
+summary(vac$people_fully_vaccinated,na.rm=TRUE)
 ```
+
+### Doses Administered 
 
 ```{r}
 p5 <- ggplot(vac) + geom_line(aes(x=date,y=new_vaccinations)) +
   scale_y_continuous(labels=comma) +
-  labs(title="Israel s New Vaccinations By Date") +
-  geom_smooth(aes(x=date,y=new_vaccinations))
+  labs(title="Israel's Daily Doses By Date") 
+ # geom_smooth(aes(x=date,y=new_vaccinations))
 ggplotly(p5)
 ```
 ```{r}
 p6 <- ggplot(vac) + geom_line(aes(x=date,y=total_vaccinations)) +
   scale_y_continuous(labels=comma) +
-  labs(title="Irael's Total Vaccinations By Date") 
+  labs(title="Israel's Total (Full) Doses Date") 
 ggplotly(p6)
 ```
 
+### People Vaccinated
+
 ```{r}
-vac$Rate <- vac$total_vaccinations/vac$population
-p7 <- ggplot(vac) + geom_line(aes(x=date,y=Rate)) + 
-    scale_y_continuous(labels=percent)  +
-  labs(title="Israel's vaccination Rate By Day") 
-ggplotly(p7)
-
-
+p5 <- ggplot(vac) + geom_line(aes(x=date,y=people_vaccinated)) +
+  scale_y_continuous(labels=comma) +
+  labs(title="Israel's Number of People Vaccinatations By Date") 
+ #  geom_smooth(aes(x=date,y=))
+ggplotly(p5)
+```
+```{r}
+p6 <- ggplot(vac) + geom_line(aes(x=date,y=people_fully_vaccinated)) +
+  scale_y_continuous(labels=comma) +
+  labs(title="Israel's Total  Number of People Fully Vaccinated By Date") 
+ggplotly(p6)
 
 ```
 
