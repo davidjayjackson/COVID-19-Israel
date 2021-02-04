@@ -1,8 +1,11 @@
 ---
-title: "Sweden COVID-19 Vaccine Rollout"
+title: "Israel COVID-19 Vaccine Rollout"
 author: "David Jackson"
 date: "2/3/2021 08:30 PM/EST"
-output: html_document
+output: 
+  html_document: 
+    fig_width: 9
+    fig_height: 7
 ---
 
 ```{r setup, include=FALSE}
@@ -35,7 +38,7 @@ theme_set(theme_light())
 rm(list=ls())
 
 db <- db <- dbConnect(RSQLite::SQLite(),dbname= "../COVID-19-DB/OURWORLD.sqlite3")
-SWE <- dbGetQuery(db,"select * from OWID where location ='Sweden'")
+SWE <- dbGetQuery(db,"select * from OWID where location ='Israel'")
 SWE$date <- as.Date(SWE$date)
 ```
 ```{r}
