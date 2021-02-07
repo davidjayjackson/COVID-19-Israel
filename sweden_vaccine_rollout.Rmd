@@ -1,7 +1,7 @@
 ---
 title: "Israel COVID-19 Vaccine Rollout"
 author: "David Jackson"
-date: "2/3/2021 08:30 PM/EST"
+date: "2/7/2021 1:35 PM/EST"
 output: 
   html_document: 
     fig_width: 9
