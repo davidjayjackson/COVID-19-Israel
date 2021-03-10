@@ -87,5 +87,13 @@ p4 <-VAC %>% filter(date >="2021-01-10") %>%
        y="Percent of Population")
 ggplotly(p4)
 ```
+#### Total Cases and  Deaths
 
+```{r}
+ggplot(df) + geom_line(aes(x=date,y=total_cases),lwd=1,col="red") +
+  labs(title="Israel Total Cases To Date")
+
+ggplot(df) + geom_line(aes(x=date,y=total_deaths),lwd=1,col="red") +
+  labs(title="Israel Total Deaths To Date")
+```
 

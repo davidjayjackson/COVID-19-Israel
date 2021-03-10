@@ -23,7 +23,7 @@ rm(list=ls())
 source("../DATA/movavg.R")
 
 db <- dbConnect(SQLite(), dbname="../COVID-19-DB/OURWORLD.sqlite3")
-df <- dbGetQuery(db,"select * from JHU")
+df <- dbGetQuery(db,"select * from OWID")
 df <- subset(df,location =="Israel"  )
 df$date <- as.Date(df$date)
 sum(df$new_cases,na.rm = TRUE)
@@ -136,3 +136,6 @@ ggplot(Monthly_new_deaths) + geom_col(aes(x=Monthly,y=new_deaths)) +
   labs(title="Monthly new_deaths") +
    scale_alpha_date()
 ```
+
+
+
