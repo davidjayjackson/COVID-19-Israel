@@ -1,7 +1,7 @@
 ---
 title: "Israel COVID-19 Vaccine Rollout"
 author: "David Jackson"
-date: "3/07/2021 1:25 PM/EST"
+date: "3/14/2021 11:45 AM/EST"
 output: 
   html_document: 
     fig_width: 9
@@ -90,10 +90,10 @@ ggplotly(p4)
 #### Total Cases and  Deaths
 
 ```{r}
-ggplot(df) + geom_line(aes(x=date,y=total_cases),lwd=1,col="red") +
+ggplot(SWE) + geom_line(aes(x=date,y=total_cases)) +
   labs(title="Israel Total Cases To Date")
 
-ggplot(df) + geom_line(aes(x=date,y=total_deaths),lwd=1,col="red") +
+ggplot(SWE) + geom_line(aes(x=date,y=total_deaths),lwd=1,col="red") +
   labs(title="Israel Total Deaths To Date")
 ```
 
