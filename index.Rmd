@@ -1,7 +1,7 @@
 ---
 title: 'Israel: Battle With COVID-19'
 author: "David Jackson"
-date: "03/22/2021 1:00 PM/EDT"
+date: "03/23/2021 10:15 AM/EDT"
 output: 
   html_document: 
     fig_width: 9
@@ -40,15 +40,6 @@ US$Rate <- US$new_deaths/US$new_cases
 
 ## Israel's Battle with COVID-19
 
-```{r}
-
-df <- dbGetQuery(db,"select * from JHU")
-df <- subset(df,location =="Israel")
-df$date <- as.Date(df$date)
-sum(df$new_cases,na.rm=TRUE)
-sum(df$new_deaths,na.rm=TRUE)
-
-```
 
 ### Israel COVID19 Mortality Rate
 
@@ -68,13 +59,13 @@ ggplot(A) + # geom_line(aes(x=date,y=Rate)) +
 ```{r}
 plot1 <-ggplot(US) +  # geom_line(aes(x=date,y=new_cases,col="Daily new_cases")) +
   labs(title="COVID-19 Cases by Date (7 day moving average) ") +
-    geom_col(aes(x=date,y=MAC)) +
-   scale_alpha_date()
+    geom_col(aes(x=date,y=MAC)) 
+   
 
-plot2<-ggplot(US) + # geom_line(aes(x=date,y=new_deaths,col="Daily new_deaths")) +
+plot2 <-ggplot(US) + # geom_line(aes(x=date,y=new_deaths,col="Daily new_deaths")) +
   labs(title="COVID-19 Deaths by Date ( 7 day moving average)") + ylim(0,100) +
-  geom_col(aes(x=date,y=MAD,)) +
-   scale_alpha_date()
+  geom_col(aes(x=date,y=MAD,)) 
+   
   
 
 ggplotly(plot1)
@@ -101,8 +92,8 @@ Weekly_new_cases$LivedSaved <- Weekly_new_cases$new_cases * (max(Weekly_new_case
 ```
 ```{r}
 ggplot(Weekly_new_cases) + geom_col(aes(x=Weekly,y=new_cases)) + 
-  labs(title="Weekly new_cases",x="Date date", y="Weekly new_cases") +
-   scale_alpha_date()
+  labs(title="Weekly new_cases",x="Date date", y="Weekly new_cases") 
+   
 
 ggplot(Weekly_new_deaths) + geom_col(aes(x=Weekly,y=new_deaths)) + 
   labs(title="Weekly new_deaths",x="Date date", y="Weekly new_deaths") +
