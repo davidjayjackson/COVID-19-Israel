@@ -1,7 +1,7 @@
 ---
 title: 'Israel: Battle With COVID-19'
 author: "David Jackson"
-date: "03/29/2021 12:15 PM/EDT"
+date: "03/30/2021 10:10 AM/EDT"
 output: 
   html_document: 
     fig_width: 9
