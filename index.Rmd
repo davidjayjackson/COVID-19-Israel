@@ -1,7 +1,7 @@
 ---
 title: 'Israel: Battle With COVID-19'
 author: "David Jackson"
-date: "04/13/2021 1:00 PM/EDT"
+date: "04/14/2021 1:05 PM/EDT"
 output: 
   html_document: 
     fig_width: 9
@@ -119,6 +119,18 @@ ggplot(Monthly_new_cases) + geom_col(aes(x=Monthly,y=new_cases)) +
 ggplot(Monthly_new_deaths) + geom_col(aes(x=Monthly,y=new_deaths)) +
   labs(title="Monthly new_deaths") +
    scale_alpha_date()
+```
+```{r}
+SWE$PC <- (SWE$new_cases/8789774)*100000
+ggplot(SWE) + geom_line(aes(x=date,y=PC)) +
+  scale_y_continuous(labels = comma) +
+  labs(title="Isreal Case Per 100,000")
+```
+```{r}
+SWE$DPC <- (SWE$new_deaths/8789774) *100000
+ggplot(SWE) + geom_line(aes(x=date,y=DPC)) +
+  scale_y_continuous(labels = comma) +
+  labs(title="Isreal Deaths Per 100,000") + theme_light()
 ```
 
 
