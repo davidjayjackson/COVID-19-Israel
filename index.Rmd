@@ -58,12 +58,12 @@ ggplot(A) + # geom_line(aes(x=date,y=Rate)) +
 ### Plot of Daily Cases and Deaths
 
 ```{r}
-plot1 <-ggplot(US) +  # geom_line(aes(x=date,y=new_cases,col="Daily new_cases")) +
+plot1 <-ggplot(US) + geom_line(aes(x=date,y=new_cases,col="Daily new_cases")) +
   labs(title="COVID-19 Cases by Date (7 day moving average) ") +
     geom_col(aes(x=date,y=MAC)) 
    
 
-plot2 <-ggplot(US) + # geom_line(aes(x=date,y=new_deaths,col="Daily new_deaths")) +
+plot2 <-ggplot(US) + geom_line(aes(x=date,y=new_deaths,col="Daily new_deaths")) +
   labs(title="COVID-19 Deaths by Date ( 7 day moving average)") + ylim(0,100) +
   geom_col(aes(x=date,y=MAD,)) 
    
