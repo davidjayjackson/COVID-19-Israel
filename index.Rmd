@@ -1,7 +1,7 @@
 ---
 title: 'Israel: Battle With COVID-19'
 author: "David Jackson"
-date: " 2021-07-01 1:20 PM/EDT"
+date: "`r Sys.time()`"
 output: 
   html_document: 
     fig_width: 9
