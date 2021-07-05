@@ -1,7 +1,7 @@
 ---
 title: "Israel COVID-19 Vaccine Rollout"
 author: "David Jackson"
-date: "6/6/2021 1:25 PM/EST"
+date: "r Sys.time()` EDT"
 output: 
   html_document: 
     fig_width: 9
@@ -81,7 +81,7 @@ VAC$PeoplFullVac <- VAC$people_fully_vaccinated/VAC$population
 ```
 ```{r}
 p4 <-VAC %>% filter(date >="2021-01-10") %>%
-  ggplot(aes(x=date,y=PeoplFullVac)) +
+  ggplot(aes(x=date,y=PeoplFullVac),lwd=1) +
     geom_line() + scale_y_continuous(labels= percent) +
   labs(title="Percentage of People Fully Vaccinated",
        y="Percent of Population")
@@ -90,7 +90,7 @@ ggplotly(p4)
 #### Total Cases and  Deaths
 
 ```{r}
-ggplot(SWE) + geom_line(aes(x=date,y=total_cases)) +
+ggplot(SWE) + geom_line(aes(x=date,y=total_cases),lwd=1) +
   labs(title="Israel Total Cases To Date")
 
 ggplot(SWE) + geom_line(aes(x=date,y=total_deaths),lwd=1,col="red") +
