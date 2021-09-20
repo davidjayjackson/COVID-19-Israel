@@ -16,6 +16,7 @@ library(RSQLite)
 library(plotly)
 library(forecast)
 theme_set(theme_linedraw())
+library(pracma)
 
 ```
 ```{r}
@@ -34,8 +35,8 @@ sum(df$new_deaths,na.rm=TRUE)
 ```{r}
 US <- subset(df,date >="2020-04-01" & new_cases >=1)
 US <- US[order(US$date,decreasing = TRUE),]
-US$MAC <- ma(US$new_cases,7,centre=TRUE)
-US$MAD <- ma(US$new_deaths,7,centre=TRUE)
+US$MAC <- movavg(US$new_cases,7,type = "e")
+US$MAD <- movavg(US$new_deaths,7,type = "e")
 US$Rate <- US$new_deaths/US$new_cases
 ```
 
