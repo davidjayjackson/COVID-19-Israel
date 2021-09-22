@@ -30,29 +30,32 @@ df$date <- as.Date(df$date)
 df$new_deaths <- as.numeric(df$new_deaths)
 sum(df$new_cases,na.rm = TRUE)
 sum(df$new_deaths,na.rm=TRUE)
+df$Year <- lubridate:: year(df$date)
+df$Year <- as.factor(df$Year)
 
 ```
 ```{r}
 US <- subset(df,date >="2020-04-01" & new_cases >=1)
 US <- US[order(US$date,decreasing = TRUE),]
-US$MAC <- movavg(US$new_cases,7,type = "e")
-US$MAD <- movavg(US$new_deaths,7,type = "e")
+US$MAC <- movavg(US$new_cases,7,type = "w")
+US$MAD <- movavg(US$new_deaths,7,type = "w")
 US$Rate <- US$new_deaths/US$new_cases
 ```
 
 ## Israel's Battle with COVID-19
 
 
-### Israel COVID19 Mortality Rate
+### Israel COVID19 Cases and Deaths by Year
 
 ```{r}
-A <- subset(US,date >="2020-07-01")
-ggplot(A) + # geom_line(aes(x=date,y=Rate)) +
-  scale_y_continuous(labels = scales::percent) +
-  labs(title="Israel COVID19 Mortality Rate ",x="Date date",y="Mortality Rate") +
-  geom_hline(yintercept = mean(A$Rate),col="red") +
-  geom_line(aes(x=date,y=Rate,col="Mov. Avg.")) +
-  geom_smooth(aes(x=date,y=Rate),span=0.25)
+
+ggplot(df) + geom_col(aes(x=Year,y=new_cases)) +
+  labs(title = "Covid-19 Cases By Year") +
+  scale_y_continuous(labels = comma)
+
+ggplot(df) + geom_col(aes(x=Year,y=new_deaths)) +
+  labs(title = "Covid-19 Deaths By Year") +
+  scale_y_continuous(labels = comma)
 
 ```
 
