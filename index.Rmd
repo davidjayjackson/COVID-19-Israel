@@ -50,7 +50,8 @@ US$Rate <- US$new_deaths/US$new_cases
 ```{r}
 
 ggplot(df) + geom_col(aes(x=Year,y=new_cases)) +
-  labs(title = "Covid-19 Cases By Year") +
+  labs(title = "Covid-19 Cases By Year") + 
+  geom_point(aes(x=Year,y=new_cases)) +
   scale_y_continuous(labels = comma)
 
 ggplot(df) + geom_col(aes(x=Year,y=new_deaths)) +
@@ -58,6 +59,9 @@ ggplot(df) + geom_col(aes(x=Year,y=new_deaths)) +
   scale_y_continuous(labels = comma)
 
 ```
+
+``
+
 
 ### Plot of Daily Cases and Deaths
 
