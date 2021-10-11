@@ -58,9 +58,6 @@ ggplot(df) + geom_col(aes(x=Year,y=new_deaths)) +
   labs(title = "Covid-19 Deaths By Year") +
   scale_y_continuous(labels = comma)
 
-
-
-
 ```
 
 ### Plot of Daily Cases and Deaths
