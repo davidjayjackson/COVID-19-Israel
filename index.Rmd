@@ -68,7 +68,7 @@ plot1 <-ggplot(US) + # geom_line(aes(x=date,y=new_cases,col="Daily new_cases")) 
   labs(title="COVID-19 Cases by Date (7 day moving average) ") 
    
 
-plot2 <-ggplot(US) + geom_line(aes(x=date,y=new_deaths,col="Daily new_deaths")) +
+plot2 <-ggplot(US) + # geom_line(aes(x=date,y=new_deaths,col="Daily new_deaths")) 
   labs(title="COVID-19 Deaths by Date ( 7 day moving average)") + ylim(0,100) +
   geom_line(aes(x=date,y=MAD,col="7 Day Average")) 
    
