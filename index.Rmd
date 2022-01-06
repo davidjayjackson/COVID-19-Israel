@@ -35,7 +35,7 @@ df$Year <- as.factor(df$Year)
 
 ```
 ```{r}
-US <- subset(df,date >="2020-04-01" & new_cases >=1)
+US <- subset(df,date >=Sys.Date() -365)
 US <- US[order(US$date,decreasing = TRUE),]
 US$MAC <- movavg(US$new_cases,7,type = "w")
 US$MAD <- movavg(US$new_deaths,7,type = "w")
