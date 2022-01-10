@@ -19,14 +19,16 @@ theme_set(theme_linedraw())
 library(pracma)
 
 ```
+## Israel Battle with Covid-19 (365 Day Window)
 ```{r}
 rm(list=ls())
 source("../DATA/movavg.R")
 
 db <- dbConnect(SQLite(), dbname="../COVID-19-DB/OURWORLD.sqlite3")
 df <- dbGetQuery(db,"select * from OWID")
-df <- subset(df,location =="Israel"  )
 df$date <- as.Date(df$date)
+df <- subset(df,location =="Israel" & date >=Sys.Date() -365 )
+
 df$new_deaths <- as.numeric(df$new_deaths)
 sum(df$new_cases,na.rm = TRUE)
 sum(df$new_deaths,na.rm=TRUE)
@@ -35,7 +37,7 @@ df$Year <- as.factor(df$Year)
 
 ```
 ```{r}
-US <- subset(df,date >=Sys.Date() -365)
+US <- df
 US <- US[order(US$date,decreasing = TRUE),]
 US$MAC <- movavg(US$new_cases,7,type = "w")
 US$MAD <- movavg(US$new_deaths,7,type = "w")

@@ -1,7 +1,7 @@
 ---
 title: "Israel COVID-19 Vaccine Rollout"
 author: "David Jackson"
-date: "r Sys.time()` EDT"
+date: "`r Sys.time()` EDT"
 output: 
   html_document: 
     fig_width: 9
