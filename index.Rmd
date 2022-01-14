@@ -19,7 +19,9 @@ theme_set(theme_linedraw())
 library(pracma)
 
 ```
+
 ## Israel Battle with Covid-19 (365 Day Window)
+
 ```{r}
 rm(list=ls())
 source("../DATA/movavg.R")
