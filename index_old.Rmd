@@ -1,0 +1,147 @@
+---
+title: 'Israel: Battle With COVID-19'
+author: "David Jackson"
+date: "`r Sys.time()`"
+output: 
+  html_document: 
+    fig_width: 9
+    fig_height: 5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,message = FALSE,error=FALSE)
+library(ggplot2)
+library(scales)
+library(RSQLite)
+library(plotly)
+library(forecast)
+theme_set(theme_linedraw())
+library(pracma)
+
+```
+
+## Israel Battle with Covid-19 (365 Day Window)
+
+```{r}
+rm(list=ls())
+source("../DATA/movavg.R")
+
+db <- dbConnect(SQLite(), dbname="../COVID-19-DB/OURWORLD.sqlite3")
+df <- dbGetQuery(db,"select * from OWID")
+df$date <- as.Date(df$date)
+df <- subset(df,location =="Israel" & date >=Sys.Date() -365 )
+
+df$new_deaths <- as.numeric(df$new_deaths)
+sum(df$new_cases,na.rm = TRUE)
+sum(df$new_deaths,na.rm=TRUE)
+df$Year <- lubridate:: year(df$date)
+df$Year <- as.factor(df$Year)
+
+```
+```{r}
+US <- df
+US <- US[order(US$date,decreasing = TRUE),]
+US$MAC <- movavg(US$new_cases,7,type = "w")
+US$MAD <- movavg(US$new_deaths,7,type = "w")
+US$Rate <- US$new_deaths/US$new_cases
+```
+
+## Israel's Battle with COVID-19
+
+
+### Israel COVID19 Cases and Deaths by Year
+
+```{r}
+
+ggplot(df) + geom_col(aes(x=Year,y=new_cases)) +
+  labs(title = "Covid-19 Cases By Year") + 
+  geom_point(aes(x=Year,y=new_cases)) +
+  scale_y_continuous(labels = comma)
+
+ggplot(df) + geom_col(aes(x=Year,y=new_deaths)) +
+  labs(title = "Covid-19 Deaths By Year") +
+  scale_y_continuous(labels = comma)
+
+```
+
+### Plot of Daily Cases and Deaths
+
+```{r}
+plot1 <-ggplot(US) + # geom_line(aes(x=date,y=new_cases,col="Daily new_cases")) +
+      geom_line(aes(x=date,y=MAC,col="7 Day Average")) +
+  labs(title="COVID-19 Cases by Date (7 day moving average) ") 
+   
+
+plot2 <-ggplot(US) + # geom_line(aes(x=date,y=new_deaths,col="Daily new_deaths")) 
+  labs(title="COVID-19 Deaths by Date ( 7 day moving average)") + ylim(0,100) +
+  geom_line(aes(x=date,y=MAD,col="7 Day Average")) 
+   
+  
+
+ggplotly(plot1)
+ggplotly(plot2)
+
+```
+
+#### Non-Moving Average By Week and By Month
+
+```{r}
+US$Monthly <- as.Date(cut(US$date,
+  breaks = "month"))
+US$Weekly <- as.Date(cut(US$date,
+  breaks = "week",
+  start.on.monday = FALSE))
+
+```
+```{r}
+Weekly_new_cases <- aggregate(new_cases~Weekly,US,FUN=sum)
+Weekly_new_deaths <- aggregate(new_deaths~Weekly,US,FUN=sum)
+Weekly_new_cases$DRate <- Weekly_new_deaths$new_deaths/Weekly_new_cases$new_cases
+Weekly_new_cases$LivedSaved <- Weekly_new_cases$new_cases * (max(Weekly_new_cases$DRate) - Weekly_new_cases$DRate) 
+
+```
+```{r}
+ggplot(Weekly_new_cases) + geom_col(aes(x=Weekly,y=new_cases)) + 
+  labs(title="Weekly new_cases",x="Date date", y="Weekly new_cases") 
+   
+
+ggplot(Weekly_new_deaths) + geom_col(aes(x=Weekly,y=new_deaths)) + 
+  labs(title="Weekly new_deaths",x="Date date", y="Weekly new_deaths") +
+   ylim(0,400) +  scale_alpha_date()
+``` 
+
+
+#### Monthly Cases and Deaths
+
+```{r}
+
+Monthly_new_cases <- aggregate(new_cases~Monthly,US,FUN=sum)
+Monthly_new_deaths <- aggregate(new_deaths~Monthly,US,FUN=sum)
+Monthly_new_cases$DRate <- Monthly_new_deaths$new_deaths/Monthly_new_cases$new_cases
+Monthly_new_cases$LivedSaved <- Monthly_new_cases$new_cases * (max(Monthly_new_cases$DRate) - Monthly_new_cases$DRate) * 100
+```
+```{r}
+ggplot(Monthly_new_cases) + geom_col(aes(x=Monthly,y=new_cases)) +
+  labs(title="Monthly new_cases") +
+  scale_y_continuous(labels=scales::comma) +
+   scale_alpha_date()
+
+ggplot(Monthly_new_deaths) + geom_col(aes(x=Monthly,y=new_deaths)) +
+  labs(title="Monthly new_deaths") +
+   scale_alpha_date()
+```
+```{r}
+# SWE$PC <- (SWE$new_cases/8789774)*100000
+# ggplot(SWE) + geom_line(aes(x=date,y=PC)) +
+#   scale_y_continuous(labels = comma) +
+#   labs(title="Isreal Case Per 100,000")
+```
+```{r}
+# SWE$DPC <- (SWE$new_deaths/8789774) *100000
+# ggplot(SWE) + geom_line(aes(x=date,y=DPC)) +
+#   scale_y_continuous(labels = comma) +
+#   labs(title="Isreal Deaths Per 100,000") + theme_light()
+```
+
+
+
