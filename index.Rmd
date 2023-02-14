@@ -19,18 +19,19 @@ library(scales)
 library(RSQLite)
 library(plotly)
 library(forecast)
+library(tidyverse)
 theme_set(theme_linedraw())
 ```
 
-## Israel's Battle with COVID-19
+## United States's Battle with COVID-19
 
 ```{r}
 rm(list=ls())
 source("../DATA/movavg.R")
 
 db <- dbConnect(SQLite(), dbname="../COVID-19-DB/OURWORLD.sqlite3")
-df <- dbGetQuery(db,"select * from OWID")
-df <- subset(df,location =="Israel" &  date >=Sys.Date() - 365 )
+db2 <- dbGetQuery(db,"select * from OWID WHERE location = 'Israel' ")
+df <- subset(db2,date >=Sys.Date() - 365 )
 
 df$new_cases <- as.numeric(df$new_cases)
 df$new_deaths <- as.numeric(df$new_deaths)
@@ -52,13 +53,13 @@ US$Rate <- US$new_deaths/US$new_cases
 ### Cases and Deaths by Year
 
 ```{r}
-df$Year <- lubridate::year(df$date)
-df$Year <- as.factor(df$Year)
-ggplot(df) + geom_col(aes(x=Year,y=new_cases)) +
+db2$Year <- lubridate::year(db2$date)
+db2$Year <- as.factor(db2$Year)
+ggplot(db2) + geom_col(aes(x=Year,y=new_cases)) +
   labs(title = "Covid-19 Cases By Year") +
    scale_y_continuous(labels = comma_format())
 
-ggplot(df) + geom_col(aes(x=Year,y=new_deaths)) +
+ggplot(db2) + geom_col(aes(x=Year,y=new_deaths)) +
   labs(title = "Covid-19 Deaths By Year") +
   scale_y_continuous(labels = comma)
 ```
@@ -69,14 +70,14 @@ ggplot(df) + geom_col(aes(x=Year,y=new_deaths)) +
 ```{r}
 daily_new_deaths <- ggplot(US) + 
   labs(title="COVID-19 Cases by Date",col="CAses",y="Cases")  +
-  geom_line(aes(x=date,y=MAC,col="Mov. Average"),lwd=1) 
+  geom_line(aes(x=date,y=MAC,col="Mov. Average"),linewidth=1) 
     ggplotly(daily_new_deaths)
 
 ```
 ```{r}
 daily_new_deaths <- ggplot(US) + 
   labs(title="COVID-19 Deaths by Date",col="Deaths",y="Deaths")  +
-  geom_line(aes(x=date,y=MAD,col="Mov. Average"),lwd=1) 
+  geom_line(aes(x=date,y=MAD,col="Mov. Average"),linewidth=1) 
    ggplotly(daily_new_deaths)
 
 ```
@@ -129,3 +130,12 @@ ggplot(Monthly_new_deaths) + geom_col(aes(x=Monthly,y=new_deaths)) +
   labs(title="Monthly new_deaths") +
    scale_alpha_date()
 ```
+
+```{r}
+uscases <- US %>% select(date,new_cases)
+write.csv(uscases,file="uscases.csv",row.names = F)
+usdeaths <- US %>% select(date,new_deaths)
+write.csv(usdeaths,file="usdeaths.csv",row.names = F)
+
+```
+
