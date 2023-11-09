@@ -23,11 +23,11 @@ library(tidyverse)
 theme_set(theme_linedraw())
 ```
 
-## United States's Battle with COVID-19
+## Isreal's Battle with COVID-19
 
 ```{r}
 rm(list=ls())
-source("../DATA/movavg.R")
+# source("../DATA/movavg.R")
 
 db <- dbConnect(SQLite(), dbname="../COVID-19-DB/OURWORLD.sqlite3")
 db2 <- dbGetQuery(db,"select * from OWID WHERE location = 'Israel' ")
