@@ -1,0 +1,111 @@
+---
+title: "USA COVID-19 Cases and Deaths"
+author: "David Jackson"
+date: "`r Sys.time()` EDT"
+output: 
+  html_document: 
+    fig_width: 9
+    fig_height: 7
+---
+
+```{r}
+#| include: false
+knitr::opts_chunk$set(echo = FALSE,message = FALSE,warning = FALSE)
+library(ggplot2)
+library(scales)
+library(RSQLite)
+library(plotly)
+library(dplyr)
+library(tidyr)
+library(forecast)
+# theme_set(theme_linedraw() + theme(panel.grid = element_line(linetype = 'dashed')))
+theme_set(theme_light())
+```
+```{r}
+db <- db <- dbConnect(RSQLite::SQLite(),dbname= "../COVID-19-DB/OURWORLD.sqlite3")
+SWE <- dbGetQuery(db,"SELECT date,total_cases,new_cases,total_deaths,new_deaths  from OWID where location ='United States'")
+SWE$date <- as.Date(SWE$date)
+
+```
+#### Daily Cases and Deaths
+```{r}
+summary(SWE$new_cases)
+summary(SWE$new_deaths)
+```
+
+#### Total Cases and Deaths
+```{r}
+summary(SWE$total_cases)
+summary(SWE$total_deaths)
+```
+```{r}
+SWE |> ggplot(aes(x=date,y=new_cases)) + geom_line() + 
+    labs(title="New Covid-19 Cases",y="Daily Cases") +
+    scale_y_continuous(labels=comma)
+```
+```{r}
+library(lubridate)
+library(scales)
+SWE$Year <- year(SWE$date)
+SWE$Month <- month(SWE$date,label = TRUE, abbr = TRUE)
+
+```
+## Daily Cases and Deaths
+
+```{r}
+SWE |>
+  group_by(Year, Month) |>
+  summarize(monthly_cases = sum(new_cases)) |>
+  ggplot(aes(x = Month, y = monthly_cases, fill = Month)) +
+  geom_col() +
+  labs(title = "New Covid-19 Monthly Cases", y = "Monthly Deaths") +
+  scale_y_continuous(labels = comma) +
+  facet_wrap(~Year) +
+  scale_fill_manual(values = rainbow(length(unique(SWE$Month)))) +
+  theme(axis.text.x = element_blank())  # Turn off x-axis labels
+
+```
+```{r}
+SWE %>%
+  group_by(Year, Month) %>%
+  summarize(monthly_deaths = sum(new_deaths)) %>%
+  ggplot(aes(x = Month, y = monthly_deaths, fill = Month)) +
+  geom_col() +
+  labs(title = "New Covid-19 Monthly Deaths", y = "Monthly Deaths") +
+  scale_y_continuous(labels = comma) +
+  facet_wrap(~Year) +
+  scale_fill_manual(values = rainbow(length(unique(SWE$Month)))) +
+  theme(axis.text.x = element_blank())  # Turn off x-axis labels
+
+
+
+```
+## Cumulative Total Cases and Deaths
+
+```{r}
+SWE |>
+  group_by(Year, Month) |>
+  summarize(monthly_cases = sum(total_cases)) |>
+  ggplot(aes(x = Month, y = monthly_cases, fill = Month)) +
+  geom_col() +
+  labs(title = "Cumulative Total Covid-19  Cases", y = "Total Cases") +
+  scale_y_continuous(labels = comma) +
+  facet_wrap(~Year) +
+  scale_fill_manual(values = rainbow(length(unique(SWE$Month)))) +
+  theme(axis.text.x = element_blank())  # Turn off x-axis labels
+
+```
+
+```{r}
+SWE |>
+  group_by(Year, Month) |>
+  summarize(monthly_deaths = sum(total_deaths)) |>
+  ggplot(aes(x = Month, y = monthly_deaths, fill = Month)) +
+  geom_col() +
+  labs(title = "Cumulative Total Covid-19  Deaths", y = "Total Deaths") +
+  scale_y_continuous(labels = comma) +
+  facet_wrap(~Year) +
+  scale_fill_manual(values = rainbow(length(unique(SWE$Month)))) +
+  theme(axis.text.x = element_blank())  # Turn off x-axis labels
+
+```
